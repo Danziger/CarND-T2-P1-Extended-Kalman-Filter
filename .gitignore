@@ -1,13 +1,17 @@
-# silly macOS
+# MAC OS:
 .DS_Store
 
-# build files
+# BUILD FILES:
 build/
 
-# editor config
+# EDITOR CONFIG:
 .vscode/
+.vs/
 
-# Xcode
+# THIRD PARTY:
+src/Eigen/
+
+# XCODE
 *.pbxuser
 !default.pbxuser
 *.mode1v3

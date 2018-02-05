@@ -24,7 +24,7 @@ public:
   /**
   * Run the whole flow of the Kalman Filter from here.
   */
-  void ProcessMeasurement(const MeasurementPackage &measurement_pack);
+  void ProcessMeasurement(const MeasurementPackage &pack);
 
   /**
   * Kalman Filter update and prediction math lives in here.
@@ -38,8 +38,12 @@ private:
   // previous timestamp
   long long previous_timestamp_;
 
+  // Initializes the state of ekf_.x with first measurement.
+  void initialize(const MeasurementPackage &pack);
+
   // tool object used to compute Jacobian and RMSE
   Tools tools;
+
   Eigen::MatrixXd R_laser_;
   Eigen::MatrixXd R_radar_;
   Eigen::MatrixXd H_laser_;
