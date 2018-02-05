@@ -8,9 +8,6 @@ build/
 .vscode/
 .vs/
 
-# THIRD PARTY:
-src/Eigen/
-
 # XCODE
 *.pbxuser
 !default.pbxuser
