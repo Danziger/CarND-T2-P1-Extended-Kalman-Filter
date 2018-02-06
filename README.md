@@ -160,3 +160,9 @@ If you'd like to generate your own radar and lidar data, see the
 Matlab scripts that can generate additional data.
 
 
+Interesting Resources
+---------------------
+
+- [Detailed explanations about Kalman Filters by Michel van Biezen @ iLectureOnline.](https://www.youtube.com/watch?v=CaCcOwJPytQ)
+
+  
