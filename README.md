@@ -9,7 +9,7 @@ CarND · T2 · P1 · Extended Kalman Filter Project
 Project Overview
 ----------------
 
-In this project you will utilize a kalman filter to estimate the state of a moving object of interest with noisy lidar and radar measurements. Passing the project requires obtaining RMSE values that are lower that the tolerance outlined in the [project rubric](https://review.udacity.com/#!/rubrics/748/view): `px = .11, py = .11, vx = 0.52, vy = 0.52` 
+In this project you will utilize a kalman filter to estimate the state of a moving object of interest with noisy lidar and radar measurements. Passing the project requires obtaining RMSE values that are lower that the tolerance outlined in the [project rubric](https://review.udacity.com/#!/rubrics/748/view): `px = 0.11, py = 0.11, vx = 0.52, vy = 0.52` 
 
 This project involves the Term 2 Simulator which can be downloaded [here](https://github.com/udacity/self-driving-car-sim/releases).
 
