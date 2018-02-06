@@ -1,6 +1,7 @@
-#include "tools.h"
+#include "Tools.h"
 
 #include <iostream>
+
 
 using Eigen::VectorXd;
 using Eigen::MatrixXd;
@@ -8,12 +9,10 @@ using std::vector;
 
 
 Tools::Tools() {}
-
-
 Tools::~Tools() {}
 
 
-VectorXd Tools::CalculateRMSE(
+VectorXd Tools::calculateRMSE(
     const vector<VectorXd> &estimations,
     const vector<VectorXd> &groundTruth
 ) {
@@ -50,51 +49,4 @@ VectorXd Tools::CalculateRMSE(
     // Calculate the squared root and return final result:
     return rmse.array().sqrt();
 
-}
-
-
-MatrixXd Tools::CalculateJacobian(const VectorXd& stateX) {
-    MatrixXd Hj(3, 4);
-
-    // Recover state parameters:
-
-    double px = stateX(0);
-    double py = stateX(1);
-    double vx = stateX(2);
-    double vy = stateX(3);
-
-    // Pre-compute a set of terms to avoid repeated calculation:
-
-    double px2 = px * px;
-    double py2 = py * py;
-    double px2py2 = px2 + py2;
-    double d1 = sqrt(px2py2);
-    double d2 = px2py2 * d1;
-
-    // Check division by zero:
-
-    if (fabs(px2py2) < 0.0001) {
-        cout << "ERROR: CalculateJacobian() - Division by 0." << endl;
-
-        return Hj;
-    }
-
-    // Could also be Hj << px / d1, py / d1, 0, 0, -py...
-
-    Hj(0, 0) = px / d1;
-    Hj(0, 1) = py / d1;
-    Hj(0, 2) = 0;
-    Hj(0, 3) = 0;
-
-    Hj(1, 0) = -py / px2py2;
-    Hj(1, 1) = px / px2py2;
-    Hj(1, 2) = 0;
-    Hj(1, 3) = 0;
-
-    Hj(2, 0) = py * (vx*py - vy * px) / d2;
-    Hj(2, 1) = px * (vy*px - vx * py) / d2;
-    Hj(2, 2) = px / d1;
-    Hj(2, 3) = py / d1;
-
-    return Hj;
 }
