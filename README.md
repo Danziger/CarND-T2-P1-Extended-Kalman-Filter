@@ -163,6 +163,6 @@ Matlab scripts that can generate additional data.
 Interesting Resources
 ---------------------
 
-- [Detailed explanations about Kalman Filters by Michel van Biezen @ iLectureOnline.](https://www.youtube.com/watch?v=CaCcOwJPytQ)
+- [Detailed explanations (55 videos) about Kalman Filters by Michel van Biezen @ iLectureOnline.](https://www.youtube.com/watch?v=CaCcOwJPytQ)
 
   
