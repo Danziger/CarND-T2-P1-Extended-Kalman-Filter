@@ -50,6 +50,8 @@ class EKF {
     MatrixXd calculateJacobian();
 
     /**
+    * Performs the Kalman Filter estimation calculations that are common 
+    * for the Standard and the Extended Kalman Filter.
     */
     void estimate(const VectorXd &y, const MatrixXd &H, const MatrixXd &R);
 
@@ -99,7 +101,7 @@ public:
     void predict(float dt);
 
     /**
-     * Updates the state by using standard Kalman Filter equations
+     * Updates the state by using Standard Kalman Filter equations
      * @param z The measurement at k+1
      * @param R The measurement covariance matrix to use in the update
      */
@@ -113,7 +115,7 @@ public:
     void updateEKF(const VectorXd &z, const MatrixXd &R);
 
     /**
-    * Updates the state by using standard Kalman Filter equations and 
+    * Updates the state by using Standard Kalman Filter equations and 
     * R_laser_ as the measurement covariance matrix.
     * @param z The measurement at k+1
     */

@@ -28,7 +28,7 @@ class EKFTracker {
 
 
     /**
-    * Initializes the state of ekf_.x with first measurement.
+    * Initializes the state of the Kalman Filter using the first measurement.
     */
     void initialize(const MeasurementPackage &pack);
 

@@ -96,7 +96,7 @@ void EKF::initMatrixes(
     R_laser_ = R_laser_in_;
     R_radar_ = R_radar_in_;
 
-    Q_ = MatrixXd(4, 4); // Will be updated from EKF::tick
+    Q_ = MatrixXd(4, 4); // Will be updated from EKF::predict
 
     I_ = MatrixXd::Identity(4, 4);
 }
