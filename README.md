@@ -81,12 +81,12 @@ Data Flow
 
 5. `main.cpp` sends the following data using `uWebSocketIO` back to the simulator:
 
-- `estimate_x = px`
-- `estimate_y = py`
-- `rmse_x = RMSE(px)`
-- `rmse_y = RMSE(py)`
-- `rmse_vx = RMSE(vx)`
-- `rmse_vy = RMSE(vy)`
+    - `estimate_x = px`
+    - `estimate_y = py`
+    - `rmse_x = RMSE(px)`
+    - `rmse_y = RMSE(py)`
+    - `rmse_vx = RMSE(vx)`
+    - `rmse_vy = RMSE(vy)`
 
 
 Generating Additional Data
