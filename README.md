@@ -114,6 +114,49 @@ These are some of the more relevant changes I made to the started code or to the
 - Create methods `EKF::updateLaser` and `EKF::updateRadar`, which use the internal `R_laser_` and `R_radar_` matrixes, respectively, as well as `EKF::update` and `EKF::updateEKF`, which accept an `R` covariance matrix as a param to be used on the update.
 
 
+Results
+-------
+
+With the default values provided in the started project, the results obtained on the simulator are:
+
+| Dataset  | Sensor | `RMSE X`  | `RMSE Y`  | `RMSE VX`  | `RMSE VY` |
+|----------|--------|-----------|-----------|------------|-----------|
+| 1        | L + R  | `0.0973`  | `0.0855`  | `0.4513`   | `0.4399`  |
+| 2        | L + R  | `0.0726`  | `0.0967`  | `0.4579`   | `0.4966`  |
+| 1        | L      | `0.1222`  | `0.0984`  | `0.5825`   | `0.4567`  |
+| 2        | L      | `0.0961`  | `0.1003`  | `0.5418`   | `0.4640`  |
+| 1        | R      | `10.9958` | `7.7916`  | `10.1094`  | `7.8036`  |
+| 2        | R      | `0.2244`  | `0.2954`  | `0.5870`   | `0.7338`  |
+
+I have been playing around with the `noiseAX_` and `noiseAY_` values, and these are the resuls for the Dataset 1 when using both sensors' data:
+
+| Noise AX / AY | `RMSE X` | `RMSE Y` | `RMSE VX` | `RMSE VY` |
+|---------------|----------|----------|-----------|-----------|
+| `10` | `0.0961` | `0.0846` | `0.4484` | `0.4330` |
+| `11` | `0.0951` | `0.0840` | `0.4463` | `0.4274` |
+| `12` | `0.0942` | `0.0836` | `0.4447` | `0.4226` |
+| `20` | `0.0907` | `0.0834` | `0.4410` | `0.4039` |
+| `24` | `0.0899` | `0.0841` | `0.4420` | `0.4012` |
+| `32` | `0.0889` | `0.0856` | `0.4457` | `0.4013` |
+| `40` | `0.0885` | `0.0872` | `0.4503` | `0.4053` |
+| `1000` | `0.0995` | `0.1201` | `0.7518` | `0.9068` |
+
+Increasing their value up to a certain point, probably around `20 - 24`, seem to help reduce the `RMSE`. Reducing them, however, had the opposite effect.
+
+If we run again all the previous tests with `noiseAX_ = noiseAY_ = 24`, we get the following results:
+
+| Dataset  | Sensor | `RMSE X`  | `RMSE Y`  | `RMSE VX`  | `RMSE VY` |
+|----------|--------|-----------|-----------|------------|-----------|
+| 1        | L + R  | `0.0889`  | `0.0856`  | `0.4457`   | `0.4013`  |
+| 2        | L + R  | `0.0735`  | `0.0869`  | `0.4497`   | `0.4582`  |
+| 1        | L      | `0.1185`  | `0.1012`  | `0.5979`   | `0.4623`  |
+| 2        | L      | `0.0967`  | `0.0981`  | `0.5450`   | `0.4698`  |
+| 1        | R      | `10.4272` | `7.2866`  | `11.6866`  | `9.6269`  |
+| 2        | R      | `0.2105`  | `0.2674`  | `0.5780`   | `0.6695`  |
+
+We can see how, overall, we haven't improved too much, or at least we haven't done that consistently for all the cases, which might indicate we are overfitting the Dataset 1 with L and R sensor, which we were using while adjusting the noise values.
+
+
 Generating Additional Data
 --------------------------
 
