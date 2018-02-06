@@ -63,15 +63,15 @@ Data Flow
 
     **For laser:**
   
-    | sensor | meas_px | meas_py | timestamp | gt_px | gt_py | gt_vx | gt_vy |
-    |--------|---------|---------|-----------|-------|-------|-------|-------|
-    | L | 8.45 | 0.25 | 1477010443349642 | 8.45 | 0.25 | -3.00027 | 0 |
+    | `sensor` | `meas_px` | `meas_py` | `timestamp` | `gt_px` | `gt_py` | `gt_vx` | `gt_vy` |
+    |----------|-----------|-----------|-------------|---------|---------|---------|---------|
+    | `L` | `8.45` | `0.25` | `1477010443349642` | `8.45` | `0.25` | `-3.00027` | `0` |
         
     **For radar:**
   
-    | sensor | meas_rho | meas_phi | meas_rho_dot | timestamp | gt_px | gt_py | gt_vx | gt_vy |
-    |--------|----------|----------|--------------|-----------|-------|-------|-------|-------|
-    | R | 8.60363 | 0.0290616 | -2.99903 | 1477010443399637 | 8.6 | 0.25 | -3.00029 | 0 |
+    | `sensor` | `meas_rho` | `meas_phi` | `meas_rho_dot` | `timestamp` | `gt_px` | `gt_py` | `gt_vx` | `gt_vy` |
+    |----------|------------|------------|----------------|-------------|---------|---------|---------|---------|
+    | `R` | `8.60363` | `0.0290616` | `-2.99903` | `1477010443399637` | `8.6` | `0.25` | `-3.00029` | `0` |
     
 2. The simulator reads all the lines and generates measurement structures that are sent to `main.cpp` using `uWebSocketIO` (port `4567`).
 
@@ -119,14 +119,14 @@ Results
 
 With the default values provided in the started project, the results obtained on the simulator are:
 
-| Dataset  | Sensor | `RMSE X`  | `RMSE Y`  | `RMSE VX`  | `RMSE VY` |
-|----------|--------|-----------|-----------|------------|-----------|
-| 1        | L + R  | `0.0973`  | `0.0855`  | `0.4513`   | `0.4399`  |
-| 2        | L + R  | `0.0726`  | `0.0967`  | `0.4579`   | `0.4966`  |
-| 1        | L      | `0.1222`  | `0.0984`  | `0.5825`   | `0.4567`  |
-| 2        | L      | `0.0961`  | `0.1003`  | `0.5418`   | `0.4640`  |
-| 1        | R      | `10.9958` | `7.7916`  | `10.1094`  | `7.8036`  |
-| 2        | R      | `0.2244`  | `0.2954`  | `0.5870`   | `0.7338`  |
+| Dataset  | Sensor   | `RMSE X`  | `RMSE Y`  | `RMSE VX`  | `RMSE VY` |
+|----------|----------|-----------|-----------|------------|-----------|
+| `1`      | `L + R`  | `0.0973`  | `0.0855`  | `0.4513`   | `0.4399`  |
+| `2`      | `L + R`  | `0.0726`  | `0.0967`  | `0.4579`   | `0.4966`  |
+| `1`      | `L`      | `0.1222`  | `0.0984`  | `0.5825`   | `0.4567`  |
+| `2`      | `L`      | `0.0961`  | `0.1003`  | `0.5418`   | `0.4640`  |
+| `1`      | `R`      | `10.9958` | `7.7916`  | `10.1094`  | `7.8036`  |
+| `2`      | `R`      | `0.2244`  | `0.2954`  | `0.5870`   | `0.7338`  |
 
 I have been playing around with the `noiseAX_` and `noiseAY_` values, and these are the resuls for the Dataset 1 when using both sensors' data:
 
@@ -145,14 +145,14 @@ Increasing their value up to a certain point, probably around `20 - 24`, seems t
 
 If we run again all the previous tests with `noiseAX_ = noiseAY_ = 24`, we get the following results:
 
-| Dataset  | Sensor | `RMSE X`  | `RMSE Y`  | `RMSE VX`  | `RMSE VY` |
-|----------|--------|-----------|-----------|------------|-----------|
-| 1        | L + R  | `0.0889`  | `0.0856`  | `0.4457`   | `0.4013`  |
-| 2        | L + R  | `0.0735`  | `0.0869`  | `0.4497`   | `0.4582`  |
-| 1        | L      | `0.1185`  | `0.1012`  | `0.5979`   | `0.4623`  |
-| 2        | L      | `0.0967`  | `0.0981`  | `0.5450`   | `0.4698`  |
-| 1        | R      | `10.4272` | `7.2866`  | `11.6866`  | `9.6269`  |
-| 2        | R      | `0.2105`  | `0.2674`  | `0.5780`   | `0.6695`  |
+| Dataset  | Sensor   | `RMSE X`  | `RMSE Y`  | `RMSE VX`  | `RMSE VY` |
+|----------|----------|-----------|-----------|------------|-----------|
+| `1`      | `L + R`  | `0.0889`  | `0.0856`  | `0.4457`   | `0.4013`  |
+| `2`      | `L + R`  | `0.0735`  | `0.0869`  | `0.4497`   | `0.4582`  |
+| `1`      | `L`      | `0.1185`  | `0.1012`  | `0.5979`   | `0.4623`  |
+| `2`      | `L`      | `0.0967`  | `0.0981`  | `0.5450`   | `0.4698`  |
+| `1`      | `R`      | `10.4272` | `7.2866`  | `11.6866`  | `9.6269`  |
+| `2`      | `R`      | `0.2105`  | `0.2674`  | `0.5780`   | `0.6695`  |
 
 We can see how, overall, we haven't improved too much, or at least we haven't done that consistently for all the cases, which might indicate we are overfitting the Dataset 1 with L and R sensor, which we were using while adjusting the noise values.
 
