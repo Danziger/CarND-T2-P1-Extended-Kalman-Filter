@@ -89,16 +89,8 @@ Data Flow
     - `rmse_vy = RMSE(vy)`
 
 
-Generating Additional Data
---------------------------
-
-If you'd like to generate your own radar and lidar data, see the
-[utilities repo](https://github.com/udacity/CarND-Mercedes-SF-Utilities) for
-Matlab scripts that can generate additional data.
-
-
-Changelog
----------
+Relevant Changes
+----------------
 
 These are some of the more relevant changes I made to the started code or to the suggestions from the lessons:
 
@@ -120,3 +112,13 @@ These are some of the more relevant changes I made to the started code or to the
 - Update division by zero checks to use a saturation value instead of logging out and error.
 - Create methods `EKF::initMatrixes`, `EKF::initState` and `EKF::initNoise`.
 - Create methods `EKF::updateLaser` and `EKF::updateRadar`, which use the internal `R_laser_` and `R_radar_` matrixes, respectively, as well as `EKF::update` and `EKF::updateEKF`, which accept an `R` covariance matrix as a param to be used on the update.
+
+
+Generating Additional Data
+--------------------------
+
+If you'd like to generate your own radar and lidar data, see the
+[utilities repo](https://github.com/udacity/CarND-Mercedes-SF-Utilities) for
+Matlab scripts that can generate additional data.
+
+
