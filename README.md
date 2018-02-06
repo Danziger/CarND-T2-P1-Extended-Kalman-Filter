@@ -9,13 +9,13 @@ CarND · T2 · P1 · Extended Kalman Filter Project
 Project Overview
 ----------------
 
-In this project you will utilize a kalman filter to estimate the state of a moving object of interest with noisy lidar and radar measurements. Passing the project requires obtaining `RMSE` values that are lower that the tolerance outlined in the [project rubric](https://review.udacity.com/#!/rubrics/748/view): `px = 0.11, py = 0.11, vx = 0.52, vy = 0.52` 
+In this project you will utilize a Kalman Filter to estimate the state of a moving object of interest with noisy lidar and radar measurements. Passing the project requires obtaining `RMSE` values that are lower that the tolerance outlined in the [project rubric](https://review.udacity.com/#!/rubrics/748/view): `px = 0.11, py = 0.11, vx = 0.52, vy = 0.52` 
 
+To test it, [Term 2 Simulator](https://github.com/udacity/self-driving-car-sim/releases) need to be used. The latest version of `main.cpp` used to run this project without the simulator can be found [here](https://github.com/udacity/CarND-Extended-Kalman-Filter-Project/blob/06cbc9967bc62592723eef99b8c8035e4a22ea7b/src/main.cpp).
 
 Dependencies
 ------------
 
-- [Term 2 Simulator](https://github.com/udacity/self-driving-car-sim/releases).
 - [`cmake >= 3.5`](https://cmake.org/install/)
 - `make >= 4.1` (Linux / [Mac](https://developer.apple.com/xcode/features/)), [`3.81` (Windows)](http://gnuwin32.sourceforge.net/packages/make.htm)
 - `gcc/g++ >= 5.4` (Linux / [Mac](https://developer.apple.com/xcode/features/)), [`MinGW` (Windows)](http://www.mingw.org/)
