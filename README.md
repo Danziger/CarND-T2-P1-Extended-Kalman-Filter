@@ -56,34 +56,41 @@ Once the install is complete, the main program can be built and run by doing the
 3. Run it: `./ExtendedKF`
 
 
+Data Flow
+---------
+
+1. The measuremennt processor/MATLAB simulator is generating the input file `data/obj_pose-laser-radar-synthetic-ukf-input.txt` with the following format:
+
+    **For laser:**
+  
+    | sensor | meas_px | meas_py | timestamp | gt_px | gt_py | gt_vx | gt_vy |
+    |--------|---------|---------|-----------|-------|-------|-------|-------|
+    | L | 8.45 | 0.25 | 1477010443349642 | 8.45 | 0.25 | -3.00027 | 0 |
+        
+    **For radar:**
+  
+    | sensor | meas_rho | meas_phi | meas_rho_dot | timestamp | gt_px | gt_py | gt_vx | gt_vy |
+    |--------|----------|----------|--------------|-----------|-------|-------|-------|-------|
+    | R | 8.60363 | 0.0290616 | -2.99903 | 1477010443399637 | 8.6 | 0.25 | -3.00029 | 0 |
+    
+2. The simulator reads all the lines and generates measurement structures that are sent to `main.cpp` using `uWebSocketIO` (port `4567`).
+
+3. The `FusionEKF::MeasurementProcessor()` is called with individual measurements (one by one), which will update the Kalman filter state.
+
+4. `main.cpp` accesses the internal `FusionEKF` and `KalmanFilter` instances' internal states and read the current estimated `px`, `py`, `vx` and `vy` and uses them to calculate multiple `RMSE` (on for each).
+
+5. `main.cpp` sends the following data using `uWebSocketIO` back to the simulator:
+
+- `estimate_x = px`
+- `estimate_y = py`
+- `rmse_x = RMSE(px)`
+- `rmse_y = RMSE(py)`
+- `rmse_vx = RMSE(vx)`
+- `rmse_vy = RMSE(vy)`
 
 
-
-Here is the main protcol that main.cpp uses for uWebSocketIO in communicating with the simulator.
-
-
-INPUT: values provided by the simulator to the c++ program
-
-["sensor_measurement"] => the measurement that the simulator observed (either lidar or radar)
-
-
-OUTPUT: values provided by the c++ program to the simulator
-
-["estimate_x"] <= kalman filter estimated position x
-["estimate_y"] <= kalman filter estimated position y
-["rmse_x"]
-["rmse_y"]
-["rmse_vx"]
-["rmse_vy"]
-
----
-
-
-
-
-## Generating Additional Data
-
-This is optional!
+Generating Additional Data
+--------------------------
 
 If you'd like to generate your own radar and lidar data, see the
 [utilities repo](https://github.com/udacity/CarND-Mercedes-SF-Utilities) for
