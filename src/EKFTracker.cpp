@@ -53,7 +53,7 @@ EKFTracker::EKFTracker() {
     // INITIALIZE EKF:
 
     ekf_.initMatrixes(P, F, H, R_laser, R_radar);
-    ekf_.initNoise(9, 9);
+    ekf_.initNoise(9, 9); // Default = 9, 9
 }
 
 

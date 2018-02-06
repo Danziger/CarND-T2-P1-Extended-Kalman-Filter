@@ -80,6 +80,18 @@ int main() {
                     string sensor_type;
                     iss >> sensor_type;
 
+                    // Filter out some values to run only on laser or radar:
+
+                    /* if (sensor_type.compare("L") == 0) {
+                        std::string msg = "42[\"manual\",{}]";
+
+                        ws.send(msg.data(), msg.length(), uWS::OpCode::TEXT);
+
+                        return;
+                    } */
+
+                    // Process laser and radar data:
+
                     if (sensor_type.compare("L") == 0) {
 
                         // Set sensor type:
