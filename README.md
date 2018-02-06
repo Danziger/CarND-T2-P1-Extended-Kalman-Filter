@@ -3,7 +3,7 @@ CarND · T2 · P1 · Extended Kalman Filter Project
 
 [![Udacity - Self-Driving Car NanoDegree](https://s3.amazonaws.com/udacity-sdc/github/shield-carnd.svg)](http://www.udacity.com/drive)
 
-<!-- <img src="examples/images/final.jpg" width="512" alt="Extended Kalman Filter Visualization." /> -->
+<img src="output/images/004 - Simulator Rotated.png" alt="Extended Kalman Filter visualization on the simulator." />
 
 
 Project Overview
@@ -75,7 +75,16 @@ Data Flow
     
 2. The simulator reads all the lines and generates measurement structures that are sent to `main.cpp` using `uWebSocketIO` (port `4567`).
 
-3. The `FusionEKF::MeasurementProcessor()` is called with individual measurements (one by one), which will update the Kalman filter state.
+3. The `FusionEKF::MeasurementProcessor()` is called with individual measurements (one by one), which will update the Kalman filter state like so:
+
+    **High-level overview of measurement processing**
+    
+    <img src="output/images/001 - Process Measurement.png" alt="Process measurement diagram." />
+
+    **Kalman Filter and Extended Kalman Filter matrices equations**
+    
+    <img src="output/images/002 - KF and EKF equations.jpg" alt="KF and EKF equations." />
+
 
 4. `main.cpp` accesses the internal `FusionEKF` and `KalmanFilter` instances' internal states and read the current estimated `px`, `py`, `vx` and `vy` and uses them to calculate multiple `RMSE` (on for each).
 
