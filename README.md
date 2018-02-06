@@ -141,7 +141,7 @@ I have been playing around with the `noiseAX_` and `noiseAY_` values, and these 
 | `40` | `0.0885` | `0.0872` | `0.4503` | `0.4053` |
 | `1000` | `0.0995` | `0.1201` | `0.7518` | `0.9068` |
 
-Increasing their value up to a certain point, probably around `20 - 24`, seem to help reduce the `RMSE`. Reducing them, however, had the opposite effect.
+Increasing their value up to a certain point, probably around `20 - 24`, seems to help reduce the `RMSE`. Reducing them, however, had the opposite effect.
 
 If we run again all the previous tests with `noiseAX_ = noiseAY_ = 24`, we get the following results:
 
