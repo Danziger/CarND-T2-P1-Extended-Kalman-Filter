@@ -9,7 +9,7 @@ CarND · T2 · P1 · Extended Kalman Filter Project
 Project Overview
 ----------------
 
-In this project you will utilize a kalman filter to estimate the state of a moving object of interest with noisy lidar and radar measurements. Passing the project requires obtaining RMSE values that are lower that the tolerance outlined in the [project rubric](https://review.udacity.com/#!/rubrics/748/view): `px = .11, py = .11, vx = 0.52, vy = 0.52` 
+In this project you will utilize a kalman filter to estimate the state of a moving object of interest with noisy lidar and radar measurements. Passing the project requires obtaining RMSE values that are lower that the tolerance outlined in the [project rubric](https://review.udacity.com/#!/rubrics/748/view): `px = 0.11, py = 0.11, vx = 0.52, vy = 0.52` 
 
 This project involves the Term 2 Simulator which can be downloaded [here](https://github.com/udacity/self-driving-car-sim/releases).
 
@@ -51,7 +51,7 @@ Build
 
 Once the install is complete, the main program can be built and run by doing the following from the project top directory:
 
-1. Create a build directory and navigate to it: `mkdir build` && `cd build`
+1. Create a build directory and navigate to it: `mkdir build && cd build`
 2. Compile the project: `cmake .. && make`
 3. Run it: `./ExtendedKF`
 
@@ -89,9 +89,36 @@ Data Flow
     - `rmse_vy = RMSE(vy)`
 
 
+Relevant Changes
+----------------
+
+These are some of the more relevant changes I made to the started code or to the suggestions from the lessons:
+
+**Code Style and Code Organization**
+
+- Use of 4 spaces instead of 2 for indentation.
+- Rename of files with classes to match its CamelCase name.
+- Rename of `FusionEKF` to `EKFTracker`.
+- Rename of `KalmanFilter` to `EKF`.
+- Letter case-separated words to name variables and class methods.
+- Make all class properties private and create methods to access and update them.
+
+**Code Functionality**
+
+- Move `Tools::calculateJacobian` to `EKF::calculateJacobian`.
+- Add `EKFTracker::getCurrentState` and `EKF::getCurrentState` and updats `main.cpp` accordingly so that it can still access the Kalman Filter state after each simulator update.
+- Remove all Kalman Filter matrixes from `EKFTracker` and add them to `EKF`, either as class properties or as local variables, depending if they can be reused or not.
+- Update `EKF::predict` to accept the elapsed as a param and incorporate it to the matrixes `F` and `Q`.
+- Update division by zero checks to use a saturation value instead of logging out and error.
+- Create methods `EKF::initMatrixes`, `EKF::initState` and `EKF::initNoise`.
+- Create methods `EKF::updateLaser` and `EKF::updateRadar`, which use the internal `R_laser_` and `R_radar_` matrixes, respectively, as well as `EKF::update` and `EKF::updateEKF`, which accept an `R` covariance matrix as a param to be used on the update.
+
+
 Generating Additional Data
 --------------------------
 
 If you'd like to generate your own radar and lidar data, see the
 [utilities repo](https://github.com/udacity/CarND-Mercedes-SF-Utilities) for
 Matlab scripts that can generate additional data.
+
+
