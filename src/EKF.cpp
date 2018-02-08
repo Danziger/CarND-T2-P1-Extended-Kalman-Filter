@@ -8,6 +8,7 @@
 #define KEEP_IN_RANGE(n) (n < NEPS ? NEPS : (n < EPS ? EPS : n))
 #define ATAN00 atan2(EPS, EPS)
 
+
 using Eigen::MatrixXd;
 using Eigen::VectorXd;
 
