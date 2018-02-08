@@ -65,7 +65,7 @@ These are some of the more relevant changes I made to the started code or to the
 - Update division by zero checks to use a saturation value instead of logging out and error.
 - Create methods `EKF::initMatrixes`, `EKF::initState` and `EKF::initNoise`.
 - Create methods `EKF::updateLaser` and `EKF::updateRadar`, which use the internal `R_laser_` and `R_radar_` matrixes, respectively, as well as `EKF::update` and `EKF::updateEKF`, which accept an `R` covariance matrix as a param to be used on the update.
-
+- Add improved division-by-zero prevention using the macros defined in `EKF.cpp`.
 
 Data Flow
 ---------
