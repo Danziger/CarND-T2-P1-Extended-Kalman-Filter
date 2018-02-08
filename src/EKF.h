@@ -30,9 +30,6 @@ class EKF {
     // Process covariance matrix:
     MatrixXd Q_;
 
-    // Identity matrix (same width and height than x_):
-    MatrixXd I_;
-
     // Acceleration noise components:
     float noiseAX_;
     float noiseAY_;
@@ -71,22 +68,22 @@ public:
      * @param Q_in Process covariance matrix
      */
     void initMatrixes(
-        MatrixXd &P_in,
-        MatrixXd &F_in,
-        MatrixXd &H_in,
-        MatrixXd &R_laser_in_,
-        MatrixXd &R_radar_in_
+        const MatrixXd &P_in,
+        const MatrixXd &F_in,
+        const MatrixXd &H_in,
+        const MatrixXd &R_laser_in_,
+        const MatrixXd &R_radar_in_
     );
 
     /**
     * Initializes the current state. 
     */
-    void initState(float px, float py, float vx, float vy);
+    void initState(const float px, const float py, const float vx, const float vy);
 
     /**
     * Initializes the process and measurement noises.
     */
-    void initNoise(float nx, float ny);
+    void initNoise(const float nx, const float ny);
 
     /**
     * Get the current filter state = px, py, vx, vy
@@ -98,7 +95,7 @@ public:
      * the state and the state covariance using the process model.
      * @param dt Time between k and k+1 in s
      */
-    void predict(float dt);
+    void predict(const float dt);
 
     /**
      * Updates the state by using Standard Kalman Filter equations

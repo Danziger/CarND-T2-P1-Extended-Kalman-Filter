@@ -158,8 +158,8 @@ int main() {
                     VectorXd estimate(4);
                     estimate = ekfTracker.getCurrentState();
 
-                    float px = estimate(0);
-                    float py = estimate(1);
+                    const float px = estimate(0);
+                    const float py = estimate(1);
 
                     estimations.push_back(estimate);
 

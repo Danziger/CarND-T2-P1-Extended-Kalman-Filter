@@ -74,7 +74,7 @@ void EKFTracker::processMeasurement(const MeasurementPackage &pack) {
     // PREDICTION:
 
     // Compute the time elapsed between the current and previous measurements:
-    float dt = (pack.timestamp_ - previous_timestamp_) / 1000000.0;	// In seconds.
+    const float dt = (pack.timestamp_ - previous_timestamp_) / 1000000.0;	// In seconds.
 
     previous_timestamp_ = pack.timestamp_;
 
@@ -102,14 +102,14 @@ VectorXd EKFTracker::getCurrentState() {
 
 
 void EKFTracker::initialize(const MeasurementPackage &pack) {
-    Eigen::VectorXd measurements = pack.raw_measurements_;
-    MeasurementPackage::SensorType type = pack.sensor_type_;
+    const VectorXd measurements = pack.raw_measurements_;
+    const MeasurementPackage::SensorType type = pack.sensor_type_;
 
     if (type == MeasurementPackage::RADAR) {
         // Convert radar from polar to cartesian coordinates and initialize state:
 
-        float rho = measurements[0]; // Range
-        float phi = measurements[1]; // Bearing
+        const float rho = measurements[0]; // Range
+        const float phi = measurements[1]; // Bearing
 
         // rho (range), phi (bearing), rho_dot (velocity)
         ekf_.initState(rho * cos(phi), rho * sin(phi), 0, 0);
