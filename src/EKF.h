@@ -2,6 +2,7 @@
 #define EKF_H_
 
 
+#include "Tools.h"
 #include "Eigen/Dense"
 
 
@@ -11,7 +12,7 @@ using Eigen::VectorXd;
 
 class EKF {
 
-    // State vector:
+    // State vector: [px, py, vx, vy] in SI units:
     VectorXd x_;
 
     // State covariance matrix:
@@ -52,6 +53,7 @@ class EKF {
     */
     void estimate(const VectorXd &y, const MatrixXd &H, const MatrixXd &R);
 
+
 public:
 
     EKF();
@@ -59,8 +61,8 @@ public:
     virtual ~EKF();
 
     /**
-     * Initializes Kalman filter
-     * @param P_in State covariance
+     * Initializes KF/EKF's matrixes
+     * @param P_in State covariance matrix
      * @param F_in Transition matrix
      * @param H_in Measurement matrix
      * @R_laser_in_ R_in Measurement covariance matrix for laser
@@ -68,11 +70,11 @@ public:
      * @param Q_in Process covariance matrix
      */
     void initMatrixes(
-        const MatrixXd &P_in,
-        const MatrixXd &F_in,
-        const MatrixXd &H_in,
-        const MatrixXd &R_laser_in_,
-        const MatrixXd &R_radar_in_
+        const MatrixXd &P,
+        const MatrixXd &F,
+        const MatrixXd &H,
+        const MatrixXd &R_laser,
+        const MatrixXd &R_radar
     );
 
     /**
@@ -86,7 +88,7 @@ public:
     void initNoise(const float nx, const float ny);
 
     /**
-    * Get the current filter state = px, py, vx, vy
+    * Get the current filter state as [px, py, vx, vy]
     */
     VectorXd getCurrentState();
     
@@ -95,7 +97,7 @@ public:
      * the state and the state covariance using the process model.
      * @param dt Time between k and k+1 in s
      */
-    void predict(const float dt);
+    void predict(const double dt);
 
     /**
      * Updates the state by using Standard Kalman Filter equations
@@ -116,7 +118,7 @@ public:
     * R_laser_ as the measurement covariance matrix.
     * @param z The measurement at k+1
     */
-    void updateLaser(const VectorXd &z);
+    void updateLidar(const VectorXd &z);
 
     /**
     * Updates the state by using Extended Kalman Filter equations and

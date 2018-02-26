@@ -1,7 +1,10 @@
-#include "EKFTracker.h"
+﻿#include "EKFTracker.h"
 #include "Eigen/Dense"
 
 #include <iostream>
+#include <iomanip>
+#include <limits>
+
 
 using Eigen::MatrixXd;
 using Eigen::VectorXd;
@@ -53,7 +56,23 @@ EKFTracker::EKFTracker() {
     // INITIALIZE EKF:
 
     ekf_.initMatrixes(P, F, H, R_laser, R_radar);
-    ekf_.initNoise(9, 9); // Default = 9, 9
+
+    // Adjust these noises (default 9 and 9):
+
+    const float noiseAX = 9;
+    const float noiseAY = 9;
+    
+    ekf_.initNoise(noiseAX, noiseAY); 
+
+    cout
+        << setprecision(2) << fixed
+        << endl
+        << "──────────────────────────────────────────────────────" << endl
+        << endl
+        << " STD DEV ACC X = " << setfill(' ') << setw(5) << noiseAX << " MET / S ^ 2" << endl
+        << " STD DEV ACC Y = " << setfill(' ') << setw(5) << noiseAY << " MET / S ^ 2" << endl
+        << endl
+        << "──────────────────────────────────────────────────────" << endl;
 }
 
 
@@ -74,7 +93,7 @@ void EKFTracker::processMeasurement(const MeasurementPackage &pack) {
     // PREDICTION:
 
     // Compute the time elapsed between the current and previous measurements:
-    const float dt = (pack.timestamp_ - previous_timestamp_) / 1000000.0;	// In seconds.
+    const double dt = (pack.timestamp_ - previous_timestamp_) / 1000000.0;	// In seconds.
 
     previous_timestamp_ = pack.timestamp_;
 
@@ -87,7 +106,7 @@ void EKFTracker::processMeasurement(const MeasurementPackage &pack) {
     if (pack.sensor_type_ == MeasurementPackage::RADAR) {
         ekf_.updateRadar(pack.raw_measurements_);
     } else {
-        ekf_.updateLaser(pack.raw_measurements_);
+        ekf_.updateLidar(pack.raw_measurements_);
     }
 
     // OUTPUT current state and state covariance:

@@ -50,3 +50,10 @@ VectorXd Tools::calculateRMSE(
     return rmse.array().sqrt();
 
 }
+
+
+double Tools::normalizeAngle(double angle) {
+    const int times = angle / M_PI;
+
+    return angle - M_PI * (times >= 0 ? ceil(times) : floor(times));
+}

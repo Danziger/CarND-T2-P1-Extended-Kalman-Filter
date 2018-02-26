@@ -6,13 +6,10 @@
 #include "EKF.h"
 #include "Eigen/Dense"
 
-#include <vector>
-#include <string>
-#include <fstream>
-
 
 using Eigen::MatrixXd;
 using Eigen::VectorXd;
+using namespace std;
 
 
 class EKFTracker {
@@ -45,7 +42,7 @@ public:
     void processMeasurement(const MeasurementPackage &pack);
 
     /**
-    * Get the current filter state = px, py, vx, vy
+    * Get the current filter state as [px, py, vx, vy]
     */
     VectorXd getCurrentState();
 };

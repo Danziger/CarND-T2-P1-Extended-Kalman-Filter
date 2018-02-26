@@ -26,6 +26,11 @@ public:
         const vector<VectorXd> &estimations,
         const vector<VectorXd> &groundTruth
     );
+
+    /**
+    * Helper method to normalize angles that will hopefully be inlined by the compiler.
+    */
+    static double normalizeAngle(double angle);
 };
 
 

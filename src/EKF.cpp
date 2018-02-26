@@ -8,8 +8,12 @@
 #define KEEP_IN_RANGE(n) (n < NEPS ? NEPS : (n < EPS ? EPS : n))
 #define ATAN00 atan2(EPS, EPS)
 
+
 using Eigen::MatrixXd;
 using Eigen::VectorXd;
+
+
+// PRIVATE:
 
 
 VectorXd EKF::h(const VectorXd &x) {
@@ -79,6 +83,9 @@ void EKF::estimate(const VectorXd &y, const MatrixXd &H, const MatrixXd &R) {
 }
 
 
+// PUBLIC:
+
+
 EKF::EKF() {}
 
 
@@ -86,17 +93,17 @@ EKF::~EKF() {}
 
 
 void EKF::initMatrixes(
-    const MatrixXd &P_in,
-    const MatrixXd &F_in,
-    const MatrixXd &H_in,
-    const MatrixXd &R_laser_in_,
-    const MatrixXd &R_radar_in_
+    const MatrixXd &P,
+    const MatrixXd &F,
+    const MatrixXd &H,
+    const MatrixXd &R_laser,
+    const MatrixXd &R_radar
 ) {
-    P_ = P_in;
-    F_ = F_in;
-    H_ = H_in;
-    R_laser_ = R_laser_in_;
-    R_radar_ = R_radar_in_;
+    P_ = P;
+    F_ = F;
+    H_ = H;
+    R_laser_ = R_laser;
+    R_radar_ = R_radar;
 
     Q_ = MatrixXd(4, 4); // Will be updated from EKF::predict
 }
@@ -120,7 +127,7 @@ VectorXd EKF::getCurrentState() {
 }
 
 
-void EKF::predict(const float dt) {
+void EKF::predict(const double dt) {
     // Integrates the time in F and Q:
 
     F_(0, 2) = dt;
@@ -157,19 +164,14 @@ void EKF::updateEKF(const VectorXd &z, const MatrixXd &R) {
     const VectorXd z_pred = h(x_);
     VectorXd y = z - z_pred;
 
-    // Normalize angle in range [-PI, PI]:
-
-    const float phi = y(1);
-    const int times = phi / M_PI;
-
-    y(1) = phi - M_PI * (times >= 0 ? ceil(times) : floor(times));
+    y(1) = Tools::normalizeAngle(y(1)); // Normalize angle in range [-PI, PI]
 
     // Estimate:
     estimate(y, calculateJacobian(), R);
 }
 
 
-void EKF::updateLaser(const VectorXd &z) {
+void EKF::updateLidar(const VectorXd &z) {
     update(z, R_laser_);
 }
 
