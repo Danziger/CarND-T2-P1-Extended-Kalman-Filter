@@ -23,12 +23,12 @@ VectorXd EKF::h(const VectorXd &x) {
     const float vy = x(3);
 
     const float rho = sqrt(px * px + py * py);
-    const float atan = px == 0 && py == 0 ? ATAN00 : atan2(py, px);
+    const float phi = px == 0 && py == 0 ? ATAN00 : atan2(py, px);
 
     VectorXd polar = VectorXd(3);
 
     // rho (range), phi (bearing), rho_dot (velocity)
-    polar << rho, atan, (px * vx + py * vy) / KEEP_IN_RANGE(rho);
+    polar << rho, phi, (px * vx + py * vy) / KEEP_IN_RANGE(rho);
 
     return polar;
 }

@@ -9,9 +9,10 @@ CarND · T2 · P1 · Extended Kalman Filter Project
 Project Overview
 ----------------
 
-In this project you will utilize a Kalman Filter to estimate the state of a moving object of interest with noisy lidar and radar measurements. Passing the project requires obtaining `RMSE` values that are lower that the tolerance outlined in the [project rubric](https://review.udacity.com/#!/rubrics/748/view): `px = 0.11, py = 0.11, vx = 0.52, vy = 0.52` 
+In this project you will utilize an Extended Kalman Filter to estimate the state of a moving object of interest with noisy lidar and radar measurements. Passing the project requires obtaining `RMSE` values that are lower that the tolerance outlined in the [project rubric](https://review.udacity.com/#!/rubrics/748/view): `px = 0.11, py = 0.11, vx = 0.52, vy = 0.52` 
 
 To test it, [Term 2 Simulator](https://github.com/udacity/self-driving-car-sim/releases) need to be used. The latest version of `main.cpp` used to run this project without the simulator can be found [here](https://github.com/udacity/CarND-Extended-Kalman-Filter-Project/blob/06cbc9967bc62592723eef99b8c8035e4a22ea7b/src/main.cpp).
+
 
 Dependencies
 ------------
@@ -65,7 +66,7 @@ These are some of the more relevant changes I made to the started code or to the
 - Update division by zero checks to use a saturation value instead of logging out and error.
 - Create methods `EKF::initMatrixes`, `EKF::initState` and `EKF::initNoise`.
 - Create methods `EKF::updateLaser` and `EKF::updateRadar`, which use the internal `R_laser_` and `R_radar_` matrixes, respectively, as well as `EKF::update` and `EKF::updateEKF`, which accept an `R` covariance matrix as a param to be used on the update.
-
+- Add improved division-by-zero prevention using the macros defined in `EKF.cpp`.
 
 Data Flow
 ---------
