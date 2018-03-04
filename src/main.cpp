@@ -13,6 +13,15 @@
 
 #define SENSOR 'B'
 
+#define RMSE_X_LIMIT 0.11
+#define RMSE_Y_LIMIT 0.11
+#define RMSE_VX_LIMIT 0.52
+#define RMSE_VY_LIMIT 0.52
+
+#define C_RED "\033[38;1;31m"
+#define C_GREEN "\033[38;0;32m"
+#define C_RST "\033[0;m"
+
 
 using namespace std;
 using json = nlohmann::json;
@@ -158,7 +167,7 @@ int main() {
                     clock_t begin = clock();
 
                     // Call ProcessMeasurment(meas_package) for Kalman filter
-                    tracker.processMeasurement(meas_package);
+                    vector<double> NIS = tracker.processMeasurement(meas_package);
 
                     // Push the current estimated x,y positon from the Kalman filter's state vector
                     VectorXd state = tracker.getCurrentState();
@@ -187,19 +196,29 @@ int main() {
 
                     if (points++ % 10 == 0) {
                         cout
-                            << "      │         │        │        │         │" << endl
-                            << "    # │    TIME │ RMSE X │ RMSE Y │ RMSE VX │ RMSE VY" << endl;
+                            << "                  │                                    │" << endl
+                            << "     #  S    TIME │  RMSE X   RMSE Y  RMSE VX  RMSE VY │     NIS   NIS 95   NIS 90   NIS 10    NIS 5" << endl;
                     }
 
                     cout
+                        << "  " << setfill(' ') << setw(4) << points
+                        << "  " << sensor_type
                         << setprecision(0) << fixed
-                        << " " << setfill(' ') << setw(4) << points << " │ "
-                        << setfill(' ') << setw(4) << 1000000 * time / points << " us" << " │ "
+                        << setfill(' ') << setw(5) << 1000000 * time / points << " us"
+                        << " │ "
                         << setprecision(3) << fixed
-                        << " " << RMSE_X << " │ "
-                        << " " << RMSE_Y << " │ "
-                        << "  " << RMSE_VX << " │ "
-                        << "  " << RMSE_VY << endl;
+                        << "  " << (RMSE_X > RMSE_X_LIMIT ? C_RED : C_GREEN) << RMSE_X
+                        << "    " << (RMSE_Y > RMSE_Y_LIMIT ? C_RED : C_GREEN) << RMSE_Y
+                        << "    " << (RMSE_VX > RMSE_VX_LIMIT ? C_RED : C_GREEN) << RMSE_VX
+                        << "    " << (RMSE_VY > RMSE_VY_LIMIT ? C_RED : C_GREEN) << RMSE_VY
+                        << C_RST << " │ "
+                        << setprecision(3) << fixed
+                        << setfill(' ') << setw(7) << NIS[0] << "  "
+                        << setprecision(1) << fixed
+                        << setfill(' ') << setw(5) << NIS[1] << " %  "
+                        << setfill(' ') << setw(5) << NIS[2] << " %  "
+                        << setfill(' ') << setw(5) << NIS[3] << " %  "
+                        << setfill(' ') << setw(5) << NIS[4] << " %" << endl;
 
                     // Send estimated position and RMSEs back to the simulator:
                     json msgJson;

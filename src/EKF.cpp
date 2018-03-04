@@ -70,16 +70,19 @@ MatrixXd EKF::calculateJacobian() {
 }
 
 
-void EKF::estimate(const VectorXd &y, const MatrixXd &H, const MatrixXd &R) {
+double EKF::estimate(const VectorXd &diffZ, const MatrixXd &H, const MatrixXd &R) {
     const MatrixXd Ht = H.transpose();
     const MatrixXd PHt = P_ * Ht;
     const MatrixXd S = H * PHt + R;
-    const MatrixXd K = PHt * S.inverse();
+    const MatrixXd Sinv = S.inverse();
+    const MatrixXd K = PHt * Sinv;
 
-    // New estimate:
-
-    x_ = x_ + (K * y);
+    // New estimate. Update state mean and covariance matrix:
+    x_ += K * diffZ;
     P_ -= K * H * P_;
+
+    // Return NIS:
+    return diffZ.transpose() * Sinv * diffZ;
 }
 
 
@@ -152,30 +155,28 @@ void EKF::predict(const double dt) {
 }
 
 
-void EKF::update(const VectorXd &z, const MatrixXd &R) {
+double EKF::update(const VectorXd &z, const MatrixXd &R) {
     const VectorXd z_pred = H_ * x_;
-    const VectorXd y = z - z_pred;
+    const VectorXd diffZ = z - z_pred;
 
-    // Estimate:
-    estimate(y, H_, R);
+    return estimate(diffZ, H_, R);
 }
 
-void EKF::updateEKF(const VectorXd &z, const MatrixXd &R) {
+double EKF::updateEKF(const VectorXd &z, const MatrixXd &R) {
     const VectorXd z_pred = h(x_);
-    VectorXd y = z - z_pred;
+    VectorXd diffZ = z - z_pred;
 
-    y(1) = Tools::normalizeAngle(y(1)); // Normalize angle in range [-PI, PI]
+    diffZ(1) = Tools::normalizeAngle(diffZ(1)); // Normalize angle in range [-PI, PI]
 
-    // Estimate:
-    estimate(y, calculateJacobian(), R);
+    return estimate(diffZ, calculateJacobian(), R);
 }
 
 
-void EKF::updateLidar(const VectorXd &z) {
-    update(z, R_laser_);
+double EKF::updateLidar(const VectorXd &z) {
+    return update(z, R_laser_);
 }
 
 
-void EKF::updateRadar(const VectorXd &z) {
-    updateEKF(z, R_radar_);
+double EKF::updateRadar(const VectorXd &z) {
+    return updateEKF(z, R_radar_);
 }

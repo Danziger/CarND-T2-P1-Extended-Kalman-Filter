@@ -37,21 +37,21 @@ class EKF {
 
 
     /**
-    * A helper method to map the predicted location from cartesian
-    * to polar coordinates.
-    */
+     * A helper method to map the predicted location from cartesian
+     * to polar coordinates.
+     */
     VectorXd h(const VectorXd &x);
 
     /**
-    * A helper method to calculate Jacobians.
-    */
+     * A helper method to calculate Jacobians.
+     */
     MatrixXd calculateJacobian();
 
     /**
-    * Performs the Kalman Filter estimation calculations that are common 
-    * for the Standard and the Extended Kalman Filter.
-    */
-    void estimate(const VectorXd &y, const MatrixXd &H, const MatrixXd &R);
+     * Performs the Kalman Filter estimation calculations that are common 
+     * for the Standard and the Extended Kalman Filter.
+     */
+    double estimate(const VectorXd &y, const MatrixXd &H, const MatrixXd &R);
 
 
 public:
@@ -78,18 +78,18 @@ public:
     );
 
     /**
-    * Initializes the current state. 
-    */
+     * Initializes the current state. 
+     */
     void initState(const float px, const float py, const float vx, const float vy);
 
     /**
-    * Initializes the process and measurement noises.
-    */
+     * Initializes the process and measurement noises.
+     */
     void initNoise(const float nx, const float ny);
 
     /**
-    * Get the current filter state as [px, py, vx, vy]
-    */
+     * Get the current filter state as [px, py, vx, vy]
+     */
     VectorXd getCurrentState();
     
     /**
@@ -104,28 +104,30 @@ public:
      * @param z The measurement at k+1
      * @param R The measurement covariance matrix to use in the update
      */
-    void update(const VectorXd &z, const MatrixXd &R);
+    double update(const VectorXd &z, const MatrixXd &R);
 
     /**
      * Updates the state by using Extended Kalman Filter equations
      * @param z The measurement at k+1
      * @param R The measurement covariance matrix to use in the update
      */
-    void updateEKF(const VectorXd &z, const MatrixXd &R);
+    double updateEKF(const VectorXd &z, const MatrixXd &R);
 
     /**
-    * Updates the state by using Standard Kalman Filter equations and 
-    * R_laser_ as the measurement covariance matrix.
-    * @param z The measurement at k+1
-    */
-    void updateLidar(const VectorXd &z);
+     * Updates the state by using Standard Kalman Filter equations and 
+     * R_laser_ as the measurement covariance matrix.
+     * @param z The measurement at k+1
+     * @return NIS value for current measurement.
+     */
+    double updateLidar(const VectorXd &z);
 
     /**
-    * Updates the state by using Extended Kalman Filter equations and
-    * R_radar_ as the measurement covariance matrix.
-    * @param z The measurement at k+1
-    */
-    void updateRadar(const VectorXd &z);
+     * Updates the state by using Extended Kalman Filter equations and
+     * R_radar_ as the measurement covariance matrix.
+     * @param z The measurement at k+1
+     * @return NIS value for current measurement.
+     */
+    double updateRadar(const VectorXd &z);
 };
 
 
