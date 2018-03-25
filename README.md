@@ -166,4 +166,6 @@ Interesting Resources
 
 - [Detailed explanations (55 videos) about Kalman Filters by Michel van Biezen @ iLectureOnline.](https://www.youtube.com/watch?v=CaCcOwJPytQ)
 
+- [Udacity Discussion Forum - How to further improve Extended Kalman Filter project?](https://discussions.udacity.com/t/how-to-further-improve-extended-kalman-filter-project/579581)
+
   
