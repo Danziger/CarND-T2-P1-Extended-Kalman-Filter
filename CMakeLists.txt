@@ -2,9 +2,9 @@ project(ExtendedKF)
 
 cmake_minimum_required (VERSION 3.5)
 
-add_definitions(-std=c++11)
+add_definitions(-std=c++11 -O3)
 
-set(CXX_FLAGS "-Wall")
+set(CXX_FLAGS "-Wall -O3 -funroll-loops")
 set(CMAKE_CXX_FLAGS "${CXX_FLAGS}")
 
 set(sources src/main.cpp src/Tools.cpp src/EKFTracker.cpp src/EKF.cpp src/Tools.h src/EKFTracker.h src/EKF.h)
