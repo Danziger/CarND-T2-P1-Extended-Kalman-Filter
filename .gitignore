@@ -7,8 +7,12 @@ build/
 # EDITOR CONFIG:
 .vscode/
 .vs/
+.editorconfig
 
-# XCODE
+# INSTALLATION FILES:
+Ipopt-*
+
+# XCODE:
 *.pbxuser
 !default.pbxuser
 *.mode1v3
