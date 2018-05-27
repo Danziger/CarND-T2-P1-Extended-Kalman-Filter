@@ -2,12 +2,12 @@
 #define EKF_H_
 
 
-#include "Tools.h"
-#include "Eigen/Dense"
+#include "common/Eigen-3.3/Dense"
 
 
 using Eigen::MatrixXd;
 using Eigen::VectorXd;
+using namespace std;
 
 
 class EKF {
@@ -62,15 +62,13 @@ public:
 
     /**
      * Initializes KF/EKF's matrixes
-     * @param P_in State covariance matrix
      * @param F_in Transition matrix
      * @param H_in Measurement matrix
      * @R_laser_in_ R_in Measurement covariance matrix for laser
      * @R_radar_in_ R_in Measurement covariance matrix for radar
      * @param Q_in Process covariance matrix
      */
-    void initMatrixes(
-        const MatrixXd &P,
+    void setMatrixes(
         const MatrixXd &F,
         const MatrixXd &H,
         const MatrixXd &R_laser,
@@ -78,14 +76,20 @@ public:
     );
 
     /**
+    * Initializes the state covariance matrix.
+    * @param P_in State covariance matrix
+    */
+    void setP(const MatrixXd &P);
+
+    /**
      * Initializes the current state. 
      */
-    void initState(const float px, const float py, const float vx, const float vy);
+    void setState(const float px, const float py, const float vx, const float vy);
 
     /**
      * Initializes the process and measurement noises.
      */
-    void initNoise(const float nx, const float ny);
+    void setNoise(const float nx, const float ny);
 
     /**
      * Get the current filter state as [px, py, vx, vy]

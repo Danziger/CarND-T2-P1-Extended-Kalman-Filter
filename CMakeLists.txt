@@ -10,7 +10,19 @@ set(CXX_FLAGS "-Wall -O3 -funroll-loops")
 set(CMAKE_CXX_FLAGS "${CXX_FLAGS}")
 # set(CMAKE_VERBOSE_MAKEFILE ON)
 
-set(sources src/main.cpp src/Tools.cpp src/EKFTracker.cpp src/EKF.cpp src/Tools.h src/EKFTracker.h src/EKF.h)
+set(SOURCES
+    src/common/format.h
+    src/common/helpers.cpp
+    src/common/helpers.h
+    src/common/MeasurementPackage.h
+    src/common/tools.cpp
+    src/common/tools.h
+    src/EKF.cpp
+    src/EKF.h
+    src/EKFTracker.cpp
+    src/EKFTracker.h
+    src/main.cpp
+)
 
 
 if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin") 
@@ -24,6 +36,6 @@ link_directories(/usr/local/Cellar/libuv/1*/lib)
 endif(${CMAKE_SYSTEM_NAME} MATCHES "Darwin") 
 
 
-add_executable(EKF ${sources})
+add_executable(EKF ${SOURCES})
 
 target_link_libraries(EKF z ssl uv uWS)

@@ -1,4 +1,7 @@
 #include "EKF.h"
+#include "common/tools.h"
+#include "common/helpers.h"
+#include "common/Eigen-3.3/Dense"
 
 #include <iostream>
 
@@ -7,10 +10,6 @@
 #define NEPS -EPS
 #define KEEP_IN_RANGE(n) (n < NEPS ? NEPS : (n < EPS ? EPS : n))
 #define ATAN00 atan2(EPS, EPS)
-
-
-using Eigen::MatrixXd;
-using Eigen::VectorXd;
 
 
 // PRIVATE:
@@ -95,14 +94,12 @@ EKF::EKF() {}
 EKF::~EKF() {}
 
 
-void EKF::initMatrixes(
-    const MatrixXd &P,
+void EKF::setMatrixes(
     const MatrixXd &F,
     const MatrixXd &H,
     const MatrixXd &R_laser,
     const MatrixXd &R_radar
 ) {
-    P_ = P;
     F_ = F;
     H_ = H;
     R_laser_ = R_laser;
@@ -112,14 +109,19 @@ void EKF::initMatrixes(
 }
 
 
-void EKF::initState(const float px, const float py, const float vx, const float vy) {
+void EKF::setP(const MatrixXd &P) {
+    P_ = P;
+}
+
+
+void EKF::setState(const float px, const float py, const float vx, const float vy) {
     x_ = VectorXd(4);
 
     x_ << px, py, vx, vy;
 }
 
 
-void EKF::initNoise(const float nx, const float ny) {
+void EKF::setNoise(const float nx, const float ny) {
     noiseAX_ = nx;
     noiseAY_ = ny;
 }
@@ -166,7 +168,7 @@ double EKF::updateEKF(const VectorXd &z, const MatrixXd &R) {
     const VectorXd z_pred = h(x_);
     VectorXd diffZ = z - z_pred;
 
-    diffZ(1) = Tools::normalizeAngle(diffZ(1)); // Normalize angle in range [-PI, PI]
+    diffZ(1) = helpers::normalizeAngle(diffZ(1)); // Normalize angle in range [-PI, PI]
 
     return estimate(diffZ, calculateJacobian(), R);
 }

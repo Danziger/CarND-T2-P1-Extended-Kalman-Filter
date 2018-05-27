@@ -1,53 +1,20 @@
-﻿#include "Tools.h"
-#include "EKFTracker.h"
+﻿#include "EKFTracker.h"
 
-#include "json.hpp"
+#include "common/JSON-Lohmann-2.1.1/json.hpp"
+#include "common/format.h"
+#include "common/helpers.h"
 
 #include <uWS/uWS.h>
 #include <math.h>
-#include <time.h>
 #include <iostream>
-#include <math.h>
-#include <time.h>
 
 
 #define SENSOR 'B'
-
-#define RMSE_X_LIMIT 0.11
-#define RMSE_Y_LIMIT 0.11
-#define RMSE_VX_LIMIT 0.52
-#define RMSE_VY_LIMIT 0.52
-
-#define C_RED "\033[38;1;31m"
-#define C_GREEN "\033[38;0;32m"
-#define C_RST "\033[0;m"
 
 
 // For convenience:
 using json = nlohmann::json;
 using namespace std;
-
-
-// HELPER FUNCTIONS:
-
-/*
-* Checks if the SocketIO event has JSON data.
-* If there is data the JSON object in string format will be returned,
-* else the empty string "" will be returned.
-*/
-string hasData(const string s) {
-    const auto found_null = s.find("null");
-    const auto b1 = s.find_first_of("[");
-    const auto b2 = s.rfind("}]");
-
-    if (found_null != string::npos) {
-        return "";
-    } else if (b1 != string::npos && b2 != string::npos) {
-        return s.substr(b1, b2 - b1 + 2);
-    }
-
-    return "";
-}
 
 
 // MAIN:
@@ -57,26 +24,11 @@ int main() {
     // Create a EKFTracker instance
     EKFTracker tracker; // TODO: This can use the abstract class type
 
-    // Used to compute the RMSE later:
-    Tools tools;
-    vector<VectorXd> estimations;
-    vector<VectorXd> ground_truth;
-
     // MESSAGE PROCESSING:
     
     uWS::Hub h; // Initialize WebSocket.
 
-    unsigned int total = 0; // For logging purposes.
-    long double time = 0; // To measure execution time.
-
-    h.onMessage([
-        &time,
-        &tracker,
-        &tools,
-        &estimations,
-        &ground_truth,
-        &total
-    ](
+    h.onMessage([ &tracker ](
         uWS::WebSocket<uWS::SERVER> ws,
         char *data,
         size_t length,
@@ -92,7 +44,7 @@ int main() {
             return;
         }
 
-        const string s = hasData(sdata);
+        const string s = helpers::hasData(sdata);
 
         if (s == "") {
             // Manual driving:
@@ -104,7 +56,7 @@ int main() {
             return;
         }
 
-        const auto j = json::parse(s);
+        const json j = json::parse(s);
         const string event = j[0].get<string>();
 
         if (event != "telemetry") {
@@ -131,6 +83,7 @@ int main() {
             meas_package.sensor_type_ = MeasurementPackage::LASER;
 
             // Read measurements:
+
             float px;
             float py;
 
@@ -138,14 +91,17 @@ int main() {
             iss >> py;
 
             // Set them in the package:
+
             meas_package.raw_measurements_ = VectorXd(2);
             meas_package.raw_measurements_ << px, py;
+
         } else if (SENSOR != 'L' && sensor_type.compare("R") == 0) {
 
             // Set sensor type:
             meas_package.sensor_type_ = MeasurementPackage::RADAR;
 
             // Read measurements:
+
             float ro;
             float theta;
             float ro_dot;
@@ -155,109 +111,62 @@ int main() {
             iss >> ro_dot;
 
             // Set them in the package:
+
             meas_package.raw_measurements_ = VectorXd(3);
             meas_package.raw_measurements_ << ro, theta, ro_dot;
         }
 
-        // Read timestamp and set it in the package:
-        long long timestamp;
-        iss >> timestamp;
-        meas_package.timestamp_ = timestamp;
+        // Read timestamp, x, y, vx and vy ground truth values:
 
-        // Read x, y, vx and vy ground truth values:
+        long long timestamp;
         float x_gt;
         float y_gt;
         float vx_gt;
         float vy_gt;
 
+        iss >> timestamp;
         iss >> x_gt;
         iss >> y_gt;
         iss >> vx_gt;
         iss >> vy_gt;
 
-        // Create a VectorXd with them and push them to the global ground_truth vector:
-        VectorXd gt_values(4);
-        gt_values(0) = x_gt;
-        gt_values(1) = y_gt;
-        gt_values(2) = vx_gt;
-        gt_values(3) = vy_gt;
+        // Set them in the package:
 
-        ground_truth.push_back(gt_values);
+        meas_package.timestamp_ = timestamp;
+        meas_package.gt_ = VectorXd(4);
+        meas_package.gt_ << x_gt, y_gt, vx_gt, vy_gt;
 
-        // Measure start time:
-        const clock_t begin = clock();
-
-        // Call ProcessMeasurment(meas_package) for Kalman filter
-        const vector<double> NIS = tracker.processMeasurement(meas_package);
+        // Process the current measurement:
+        tracker.processMeasurement(meas_package);
 
         // Push the current estimated x,y positon from the Kalman filter's state vector
         const VectorXd state = tracker.getCurrentState();
 
-        // Measure end time:
-        const clock_t end = clock();
+        // Get the current RMSE:
+        VectorXd RMSE = tracker.getCurrentRMSE();
 
-        // Update average time:
-        time += (long double)(end - begin) / CLOCKS_PER_SEC;
+        // Get all individual components from the current state and RMSE:
 
-        // Get px and py and save the state:
-        const float px = state(0);
-        const float py = state(1);
+        const double px = state(0);
+        const double py = state(1);
 
-        estimations.push_back(state);
-
-        // Calculate RMSE
-        VectorXd RMSE = tools.calculateRMSE(estimations, ground_truth);
-                    
-        const float RMSE_X = RMSE(0);
-        const float RMSE_Y = RMSE(1);
-        const float RMSE_VX = RMSE(2);
-        const float RMSE_VY = RMSE(3);
-
-        // Print stats header once every 10 rows:
-
-        if (++total % 10 == 1) {
-            cout
-                << "                  │                                    │" << endl
-                << "     #  S    TIME │  RMSE X   RMSE Y  RMSE VX  RMSE VY │     NIS   NIS 95   NIS 90   NIS 10    NIS 5" << endl;
-        }
-
-        // Print actual stats:
-
-        cout
-            << "  " << setfill(' ') << setw(4) << total
-            << "  " << sensor_type
-            << setprecision(0) << fixed
-            << setfill(' ') << setw(5) << 1000000 * time / total << " us"
-            << " │ "
-            << setprecision(3) << fixed
-            << "  " << (RMSE_X > RMSE_X_LIMIT ? C_RED : C_GREEN) << RMSE_X
-            << "    " << (RMSE_Y > RMSE_Y_LIMIT ? C_RED : C_GREEN) << RMSE_Y
-            << "    " << (RMSE_VX > RMSE_VX_LIMIT ? C_RED : C_GREEN) << RMSE_VX
-            << "    " << (RMSE_VY > RMSE_VY_LIMIT ? C_RED : C_GREEN) << RMSE_VY
-            << C_RST << " │ "
-            << setprecision(3) << fixed
-            << setfill(' ') << setw(7) << NIS[0] << "  "
-            << setprecision(1) << fixed
-            << setfill(' ') << setw(5) << NIS[1] << " %  "
-            << setfill(' ') << setw(5) << NIS[2] << " %  "
-            << setfill(' ') << setw(5) << NIS[3] << " %  "
-            << setfill(' ') << setw(5) << NIS[4] << " %" << endl;
+        const double RMSE_X = RMSE(0);
+        const double RMSE_Y = RMSE(1);
+        const double RMSE_VX = RMSE(2);
+        const double RMSE_VY = RMSE(3);
 
         // Send estimated position and RMSEs back to the simulator:
 
-        json msgJson;
+        const json msgJson = {
+            { "estimate_x", px      },
+            { "estimate_y", py      },
+            { "rmse_x",     RMSE_X  },
+            { "rmse_y",     RMSE_Y  },
+            { "rmse_vx",    RMSE_VX },
+            { "rmse_vy",    RMSE_VY }
+        };
 
-        // Position:
-        msgJson["estimate_x"] = px;
-        msgJson["estimate_y"] = py;
-
-        // RMSEs:
-        msgJson["rmse_x"] = RMSE_X;
-        msgJson["rmse_y"] = RMSE_Y;
-        msgJson["rmse_vx"] = RMSE_VX;
-        msgJson["rmse_vy"] = RMSE_VY;
-
-        auto msg = "42[\"estimate_marker\"," + msgJson.dump() + "]";
+        const string msg = "42[\"estimate_marker\"," + msgJson.dump() + "]";
 
         // Send it:
         ws.send(msg.data(), msg.length(), uWS::OpCode::TEXT);
@@ -293,7 +202,7 @@ int main() {
             << endl
             << " Connected!" << endl
             << endl
-            << "──────────────────────────────────────────────────────" << endl
+            << SEPARATOR << endl
             << endl;
     });
 
@@ -307,7 +216,11 @@ int main() {
     ) {
         ws.close();
 
-        std::cout << "Disconnected!" << std::endl << std::endl << std::endl;
+        cout
+            << endl
+            << "Disconnected!" << endl
+            << endl
+            << SEPARATOR << endl;
     });
 
     // START LISTENING:
@@ -320,10 +233,15 @@ int main() {
             << endl
             << " Listening on port " << port << "..." << endl
             << endl
-            << "──────────────────────────────────────────────────────" << endl;
+            << SEPARATOR << endl;
 
     } else {
-        std::cerr << std::endl << "Failed to listen on port" << port << "!" << std::endl << std::endl;
+
+        cerr
+            << endl
+            << "Failed to listen on port" << port << "!"
+            << endl
+            << SEPARATOR << endl;
 
         return -1;
     }
